@@ -148,7 +148,8 @@ class JSONValidate(object):
 
     def validator_creator(self, constraints, requirements):
         default = constraints[_DEFAULT]
-        if default in [self.object_validator, self.items_validator]:
+        # XXX this isn't right
+        if default == self.object_validator:
             return self.object_validator(requirements)
 
         validators = [default]

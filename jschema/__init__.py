@@ -8,22 +8,32 @@ class InvalidSchema(Exception):
 
 _DEFAULT = object()
 
+class deserialize(object):
 
+    def __init__(self, func):
+        self.func = func
 
-class JSONValidate(object):
-
-    def __init__(self, fromdict=None, fromstring=None, fromfile=None):
-        self._schema = {}
-        self._establish_simple_constraints()
-
+    def __call__(self, fromdict=None, fromstring=None, fromfile=None,
+                *args, **kwargs):
         for source, loader in ((fromdict, lambda d: d),
                                (fromstring, json.loads),
                                (fromfile, json.load)):
             if source is not None:
-                self.schema = loader(source)
-                break
-        else:
-            self.schema = {}
+                return self.func(loader(source), *args, **kwargs)
+        return self.func({}, *args, **kwargs)
+
+    def __get__(self, obj, type_=None):
+        bound_func = self.func.__get__(obj, type_)
+        return self.__class__(bound_func)
+
+
+class JSONValidate(object):
+
+    @deserialize
+    def __init__(self, obj=None):
+        self._schema = None
+        self._establish_simple_constraints()
+        self.schema = obj
 
     def _establish_simple_constraints(self):
         string_constraints = {_DEFAULT: lambda s: isinstance(s, basestring),
@@ -112,14 +122,8 @@ class JSONValidate(object):
             if requirements.get('required'):
                 required.add(prop)
 
-        def validate(fromdict=None, fromstring=None, fromfile=None):
-            if fromstring is not None:
-                obj = json.loads(fromstring)
-            elif fromfile is not None:
-                obj = json.load(fromfile)
-            else:
-                obj = fromdict
-                
+        @deserialize
+        def validate(obj=None):
             valid = False
             seen = set()
 

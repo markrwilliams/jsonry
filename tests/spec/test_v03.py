@@ -2,10 +2,12 @@ import pytest
 import itertools
 
 import jschema
+
 # 5
-SCHEMA_TEMPLATE  = {'name': 'test-schema',
-                    'description': 'a test schema',
-                    'properties': None}
+SCHEMA_TEMPLATE = {'name': 'test-schema',
+                   'description': 'a test schema',
+                   'properties': None}
+
 
 # where's float?
 def test_schema_definition():
@@ -17,9 +19,10 @@ def test_schema_definition():
     assert validator.name == schema['name']
     assert validator.description == schema['description']
 
+
 # 5.1
 def test_simple_type():
-    types = {'array': {'invalid': [1, 'a'], 
+    types = {'array': {'invalid': [1, 'a'],
                        'valid': [[1, 2]]},
              'boolean': {'invalid': ['a', 1.5, None],
                          'valid': [True, False]},
@@ -51,4 +54,3 @@ def test_simple_type():
     schema['properties']['test'] = {'type': 'nonsense'}
     with pytest.raises(jschema.InvalidSchema):
         jschema.JSONValidate(fromdict=schema)
-

@@ -3,10 +3,12 @@ try:
 except ImportError:
     import json
 
+
 class InvalidSchema(Exception):
     """raised for invalid schemas"""
 
 _DEFAULT = object()
+
 
 class deserialize(object):
 
@@ -14,7 +16,7 @@ class deserialize(object):
         self.func = func
 
     def __call__(self, fromdict=None, fromstring=None, fromfile=None,
-                *args, **kwargs):
+                 *args, **kwargs):
         for source, loader in ((fromdict, lambda d: d),
                                (fromstring, json.loads),
                                (fromfile, json.load)):
@@ -64,13 +66,14 @@ class JSONValidate(object):
 
         null_constraints = {_DEFAULT: lambda n: n is None}
 
-        all_defaults = [constraint[_DEFAULT] for constraint in (string_constraints,
-                                                                number_constraints,
-                                                                integer_constraints,
-                                                                boolean_constraints,
-                                                                object_constraints,
-                                                                array_constraints,
-                                                                null_constraints)]
+        all_defaults = [constraint[_DEFAULT] for constraint
+                        in (string_constraints,
+                            number_constraints,
+                            integer_constraints,
+                            boolean_constraints,
+                            object_constraints,
+                            array_constraints,
+                            null_constraints)]
 
         any_constraints = {_DEFAULT: lambda v: any(d(v) for d in all_defaults)}
 
@@ -85,6 +88,7 @@ class JSONValidate(object):
 
     def items_validator(self, items_schema):
         validator = self.object_validator({'properties': {None: items_schema}})
+
         def items(items):
             return all(validator({None: i}) for i in items)
         return items
@@ -114,7 +118,7 @@ class JSONValidate(object):
                 validators = [self.validator_creator(self.type_constraints[t],
                                                      requirements)
                               for t in types]
-            except KeyError, e:
+            except KeyError as e:
                 raise InvalidSchema('unknown type {type_}'.format(type_=e))
 
             props_validators.append((prop, validators))
@@ -159,6 +163,7 @@ class JSONValidate(object):
             constraint = requirements.get(k)
             if constraint:
                 validators.append(validator(constraint))
+
         def validator(value):
             try:
                 valid = all(v(value) for v in validators)

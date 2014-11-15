@@ -2,7 +2,7 @@
 
 A JSON utility library; a place for JSON tools.
 
-## `jsonry.schema`
+## jsonry.schema
 
 ``jsonry.schema`` is a Python module that checks if JSON objects conform to `JSON schemas <http://tools.ietf.org/html/draft-zyp-json-schema-03>`_.
 

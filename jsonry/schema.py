@@ -104,7 +104,7 @@ class JSONValidate(object):
         self.description = schema.get('description')
         self.validate = (self.object_validator(schema)
                          if schema
-                         else lambda value: True)
+                         else deserialize(lambda value: True))
 
     def object_validator(self, schema):
         props_validators = []

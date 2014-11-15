@@ -1,15 +1,16 @@
-=======
-jschema
-=======
+# jsonry
 
-``jschema`` is a Python module that checks if JSON objects conform to `JSON schemas <http://tools.ietf.org/html/draft-zyp-json-schema-03>`_.
+A JSON utility library; a place for JSON tools.
 
-Usage
------
+## `jsonry.schema`
+
+``jsonry.schema`` is a Python module that checks if JSON objects conform to `JSON schemas <http://tools.ietf.org/html/draft-zyp-json-schema-03>`_.
+
+### Usage
 Schema and instance taken from `Wikipedia <http://en.wikipedia.org/wiki/Json#Schema>`_.
 
     >>> schema = '''
-    ... {
+    {
             "name":"Product",
             "properties":
             {
@@ -58,7 +59,7 @@ Schema and instance taken from `Wikipedia <http://en.wikipedia.org/wiki/Json#Sch
     }
     '''
     >>> doc = '''
-    ... {
+    {
             "id": 1,
             "name": "Foo",
             "price": 123,
@@ -66,7 +67,7 @@ Schema and instance taken from `Wikipedia <http://en.wikipedia.org/wiki/Json#Sch
             "stock": { "warehouse":300, "retail":20 }
         }
     '''
-    >>> from jschema import JSONValidate(fromstring=schema)
+    >>> from jsonry.schema import JSONValidate(fromstring=schema)
     >>> validator = JSONValidate(fromstring=schema)
     >>> validator.validate(fromstring=doc)
     True
@@ -82,5 +83,4 @@ Schema and instance taken from `Wikipedia <http://en.wikipedia.org/wiki/Json#Sch
       File "jschema/__init__.py", line 134, in validate
         '{value}'.format(prop=prop, value=value))
     ValueError: warehouse invalid: bad value
-    >>> 
-
+    >>>

@@ -1,7 +1,7 @@
 import pytest
 import itertools
 
-import jschema
+from jsonry import schema
 
 # 5
 SCHEMA_TEMPLATE = {'name': 'test-schema',
@@ -11,13 +11,13 @@ SCHEMA_TEMPLATE = {'name': 'test-schema',
 
 # where's float?
 def test_schema_definition():
-    schema = SCHEMA_TEMPLATE.copy()
-    del schema['properties']
+    sch = SCHEMA_TEMPLATE.copy()
+    del sch['properties']
 
     # does a schema need a name?
-    validator = jschema.JSONValidate(fromdict=schema)
-    assert validator.name == schema['name']
-    assert validator.description == schema['description']
+    validator = schema.JSONValidate(fromdict=sch)
+    assert validator.name == sch['name']
+    assert validator.description == sch['description']
 
 
 # 5.1
@@ -38,12 +38,12 @@ def test_simple_type():
     types['any'] = {'valid': itertools.chain.from_iterable(types.values()),
                     'invalid': []}
 
-    schema = SCHEMA_TEMPLATE.copy()
-    schema['properties'] = {}
+    sch = SCHEMA_TEMPLATE.copy()
+    sch['properties'] = {}
 
     for t, fixtures in types.iteritems():
-        schema['properties']['test'] = {'type': t}
-        validator = jschema.JSONValidate(fromdict=schema)
+        sch['properties']['test'] = {'type': t}
+        validator = schema.JSONValidate(fromdict=sch)
         for valid in fixtures['valid']:
             validator.validate({'test': valid})
         for invalid in fixtures['invalid']:
@@ -51,6 +51,6 @@ def test_simple_type():
                 validator.validate({'test': invalid})
 
     # try to add a nonsense type
-    schema['properties']['test'] = {'type': 'nonsense'}
-    with pytest.raises(jschema.InvalidSchema):
-        jschema.JSONValidate(fromdict=schema)
+    sch['properties']['test'] = {'type': 'nonsense'}
+    with pytest.raises(schema.InvalidSchema):
+        schema.JSONValidate(fromdict=sch)
